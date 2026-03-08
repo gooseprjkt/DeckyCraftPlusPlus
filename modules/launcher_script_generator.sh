@@ -60,7 +60,7 @@
 # @description Generate the minecraftSplitscreen.sh launcher script with
 #              configuration values baked in via placeholder replacement.
 # @param       $1 - output_path: Path for the generated script
-# @param       $2 - launcher_name: "PollyMC" or "PrismLauncher"
+# @param       $2 - launcher_name: "PrismLauncher"
 # @param       $3 - launcher_type: "appimage" or "flatpak"
 # @param       $4 - launcher_exec: Full path or flatpak command
 # @param       $5 - launcher_dir: Launcher data directory
@@ -69,9 +69,9 @@
 # @global      REPO_URL - (input, optional) Repository URL for embedding
 # @return      0 on success
 # @example
-#   generate_splitscreen_launcher "/path/to/script.sh" "PollyMC" "flatpak" \
-#       "flatpak run org.fn2006.PollyMC" "/home/user/.var/app/org.fn2006.PollyMC/data/PollyMC" \
-#       "/home/user/.var/app/org.fn2006.PollyMC/data/PollyMC/instances"
+#   generate_splitscreen_launcher "/path/to/script.sh" "PrismLauncher" "flatpak" \
+#       "flatpak run org.prismlauncher.PrismLauncher" "/home/user/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher" \
+#       "/home/user/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/instances"
 generate_splitscreen_launcher() {
     local output_path="$1"
     local launcher_name="$2"
@@ -236,8 +236,7 @@ validate_launcher() {
         # For Flatpak, check if the app is installed
         local flatpak_id
         case "$LAUNCHER_NAME" in
-            "PollyMC") flatpak_id="org.fn2006.PollyMC" ;;
-            "PrismLauncher") flatpak_id="org.prismlauncher.PrismLauncher" ;;
+            "PrismLauncher"|*) flatpak_id="org.prismlauncher.PrismLauncher" ;;
         esac
         if command -v flatpak >/dev/null 2>&1 && flatpak list --app 2>/dev/null | grep -q "$flatpak_id"; then
             launcher_available=true
@@ -1787,13 +1786,12 @@ killAllInstances() {
     pkill -f "kde-inhibit.*$LAUNCHER_NAME" 2>/dev/null || true
 }
 
-# Kill the PrismLauncher/PollyMC process itself
+# Kill the PrismLauncher process itself
 killLauncher() {
     log_info "Stopping $LAUNCHER_NAME..."
     if [ "$LAUNCHER_TYPE" = "flatpak" ]; then
         local flatpak_id=""
         case "$LAUNCHER_NAME" in
-            "PollyMC") flatpak_id="org.fn2006.PollyMC" ;;
             "PrismLauncher"|*) flatpak_id="org.prismlauncher.PrismLauncher" ;;
         esac
         flatpak kill "$flatpak_id" 2>/dev/null || true

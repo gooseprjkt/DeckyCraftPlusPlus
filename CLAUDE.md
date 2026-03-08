@@ -10,13 +10,9 @@ This document provides essential context for AI assistants working on this codeb
 **Repository:** https://github.com/aradanmn/MinecraftSplitscreenSteamdeck
 **License:** MIT
 
-### Core Concept: Hybrid Launcher Approach
+### Core Concept: PrismLauncher-Only Architecture
 
-The project uses two launchers strategically:
-- **PrismLauncher**: For CLI-based automated instance creation (has excellent CLI but requires Microsoft account)
-- **PollyMC**: For gameplay (no license verification, offline-friendly)
-
-After successful setup, PrismLauncher files are cleaned up, leaving only PollyMC for gameplay.
+PrismLauncher handles everything — both automated CLI-based instance creation and gameplay. A Microsoft account is required. There is no longer a second launcher involved.
 
 ## Repository Structure
 
@@ -29,7 +25,7 @@ After successful setup, PrismLauncher files are cleaned up, leaving only PollyMC
 ├── token.enc                           # Encrypted CurseForge API token
 ├── README.md                           # User documentation
 ├── .github/workflows/release.yml       # GitHub Actions release workflow
-└── modules/                            # 14 specialized bash modules
+└── modules/                            # 13 specialized bash modules
     ├── version_info.sh                 # Version constants
     ├── utilities.sh                    # Print functions, system detection
     ├── path_configuration.sh           # CRITICAL: Centralized path management
@@ -40,7 +36,6 @@ After successful setup, PrismLauncher files are cleaned up, leaving only PollyMC
     ├── lwjgl_management.sh             # LWJGL version detection
     ├── mod_management.sh               # Mod compatibility (largest module, ~1900 lines)
     ├── instance_creation.sh            # Creates 4 Minecraft instances
-    ├── pollymc_setup.sh                # PollyMC launcher setup
     ├── steam_integration.sh            # Steam library integration
     ├── desktop_launcher.sh             # Desktop .desktop file creation
     └── main_workflow.sh                # Main orchestration (~1300 lines)
@@ -50,13 +45,13 @@ After successful setup, PrismLauncher files are cleaned up, leaving only PollyMC
 
 ### Path Configuration (CRITICAL)
 
-`modules/path_configuration.sh` is the **single source of truth** for all paths. It manages two launcher configurations:
+`modules/path_configuration.sh` is the **single source of truth** for all paths. It manages the PrismLauncher configuration:
 
 ```bash
 # CREATION launcher (PrismLauncher) - for CLI instance creation
 CREATION_DATA_DIR, CREATION_INSTANCES_DIR, CREATION_EXECUTABLE
 
-# ACTIVE launcher (PollyMC) - for gameplay
+# ACTIVE launcher (PrismLauncher) - for gameplay
 ACTIVE_DATA_DIR, ACTIVE_INSTANCES_DIR, ACTIVE_EXECUTABLE, ACTIVE_LAUNCHER_SCRIPT
 ```
 
@@ -76,10 +71,9 @@ Modules are sourced in dependency order in `install-minecraft-splitscreen.sh`:
 ```bash
 UPPERCASE          # Global constants and exported variables
 lowercase          # Local variables and functions
-ACTIVE_*           # Related to gameplay launcher (PollyMC)
+ACTIVE_*           # Related to gameplay launcher (PrismLauncher)
 CREATION_*         # Related to instance creation launcher (PrismLauncher)
 PRISM_*            # PrismLauncher-specific
-POLLYMC_*          # PollyMC-specific
 ```
 
 ### Function Naming Patterns
@@ -197,7 +191,7 @@ fi
 | Fabric Meta API | Fabric Loader, LWJGL versions | No |
 | Mojang API | Minecraft versions, Java requirements | No |
 | SteamGridDB API | Custom artwork | No |
-| GitHub API | PrismLauncher/PollyMC releases | No |
+| GitHub API | PrismLauncher releases | No |
 
 ## Development Commands
 
@@ -322,6 +316,7 @@ The installer generates `minecraftSplitscreen.sh` at runtime with:
 | `modules/instance_creation.sh` | ~600+ | Instance creation logic |
 | `add-to-steam.py` | ~195 | Steam integration |
 
+
 ## Installation Flow (10 Phases)
 
 1. **Workspace Setup** - Temporary directories, signal handling
@@ -331,7 +326,7 @@ The installer generates `minecraftSplitscreen.sh` at runtime with:
 5. **Mod Compatibility** - API checking for compatible versions
 6. **User Selection** - Interactive mod choice
 7. **Instance Creation** - 4 splitscreen instances
-8. **Launcher Optimization** - PollyMC setup, PrismLauncher cleanup
+8. **Launcher Script Generation** - Generate minecraftSplitscreen.sh with correct paths
 9. **System Integration** - Steam, desktop shortcuts
 10. **Completion Report** - Summary with paths and usage
 
@@ -354,11 +349,9 @@ ssh deck@steamdeck './cleanup-minecraft-splitscreen.sh --force'
 ```
 
 **What it removes:**
-- PollyMC data and AppImage (`~/.local/share/PollyMC`)
-- PollyMC Flatpak data (`~/.var/app/org.fn2006.PollyMC`)
 - PrismLauncher data and AppImage (`~/.local/share/PrismLauncher`)
 - PrismLauncher Flatpak data (`~/.var/app/org.prismlauncher.PrismLauncher`)
-- Flatpak applications (PollyMC, PrismLauncher)
+- PrismLauncher Flatpak application
 - Desktop shortcuts and app menu entries
 - Installer logs (`~/.local/share/MinecraftSplitscreen`)
 
@@ -409,7 +402,7 @@ INSTALLER_SOURCE_URL=https://raw.githubusercontent.com/aradanmn/MinecraftSplitsc
 - `modules/steam_integration.sh` - "Add to Steam?" prompt (now uses `prompt_yes_no`)
 - `modules/desktop_launcher.sh` - "Create desktop launcher?" prompt (now uses `prompt_yes_no`)
 
-**Note:** `modules/pollymc_setup.sh` was checked and contains no user prompts (contrary to original assumption)
+**Note:** `modules/pollymc_setup.sh` has since been removed (PollyMC is dead as of 2026-02-07).
 
 ---
 
@@ -572,9 +565,9 @@ Save installation config to: `~/.local/share/MinecraftSplitscreen/install-config
   "minecraft_version": "1.21.4",
   "fabric_version": "0.16.10",
   "launcher": {
-    "type": "pollymc",
+    "type": "prismlauncher",
     "install_type": "flatpak",
-    "data_dir": "/home/deck/.var/app/org.fn2006.PollyMC/data/PollyMC"
+    "data_dir": "/home/deck/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher"
   },
   "mods": {
     "selected": ["fabric-api", "controllable", "worldhost", "cloth-config"],
@@ -613,26 +606,11 @@ Save installation config to: `~/.local/share/MinecraftSplitscreen/install-config
 
 ---
 
-### Issue #7: PollyMC is Dead - Find Replacement or Remove (HIGH PRIORITY)
-**Problem:** PollyMC project is completely gone as of 2026-02-07:
-- `pollymc.org` does not resolve
-- GitHub repo `fn2006/PollyMC` returns 404
-- Flatpak install fails, AppImage download fails
+### Issue #7: PollyMC Removed ✅ RESOLVED
 
-**Impact:** The entire hybrid launcher strategy (PrismLauncher for creation, PollyMC for offline gameplay) is broken. The installer correctly falls back to PrismLauncher as sole launcher, but PrismLauncher **requires a Microsoft account** to launch Minecraft — eliminating the offline/no-license-verification gameplay that PollyMC provided.
+**Resolution:** PollyMC code removed. PrismLauncher is now the sole launcher. Users require a Microsoft account. `pollymc_setup.sh` deleted.
 
-**Current Behavior:** Installer works fine with PrismLauncher only, but users must manually log into a Microsoft account via PrismLauncher GUI before gameplay works.
-
-**Solution Approaches:**
-1. **Accept PrismLauncher-only** - Remove all PollyMC code, document MS account requirement
-2. **Find PollyMC alternative** - Research other offline-friendly launchers (e.g., UltimMC, HMCL, etc.)
-3. **Automate MS account login** - Add OAuth device flow during install so users can log in without GUI
-
-**Files affected:**
-- `modules/pollymc_setup.sh` - Entire module may be removed or replaced
-- `modules/path_configuration.sh` - Remove PollyMC path logic
-- `modules/main_workflow.sh` - Remove PollyMC setup phase
-- `README.md` - Update documentation
+PollyMC went offline as of 2026-02-07 (`pollymc.org` does not resolve, GitHub repo `fn2006/PollyMC` returns 404). All PollyMC references have been removed from the codebase and documentation.
 
 ---
 
@@ -663,7 +641,7 @@ Save installation config to: `~/.local/share/MinecraftSplitscreen/install-config
 1. ✅ **Issue #3 (Logging)** - DONE. All print_* functions auto-log.
 2. ✅ **Issue #1 (User Input)** - DONE. All modules refactored to use `prompt_user()` and `prompt_yes_no()`.
 3. ✅ **Issue #5 (Dynamic Splitscreen)** - DONE. Players can join/leave mid-session.
-4. ⏳ **Issue #7 (PollyMC Dead)** - Remove PollyMC code, accept PrismLauncher-only
+4. ✅ **Issue #7 (PollyMC Removed)** - DONE. PollyMC code removed, PrismLauncher-only.
 5. ⏳ **Issue #8 (MS Account During Install)** - OAuth device flow for headless auth
 6. ⏳ **Issue #6 (Previous Installation Detection)** - Improves repeat user experience
 7. ⏳ **Issue #2 (Controller Detection)** - Improves Steam Deck UX
@@ -673,11 +651,15 @@ Save installation config to: `~/.local/share/MinecraftSplitscreen/install-config
 
 ```bash
 # Check generated launcher script version
-head -20 ~/.local/share/PollyMC/minecraftSplitscreen.sh
+head -20 ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/minecraftSplitscreen.sh
 
 # View instance configuration
-cat ~/.local/share/PollyMC/instances/latestUpdate-1/instance.cfg
+cat ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/instances/latestUpdate-1/instance.cfg
 
 # Check accounts
-cat ~/.local/share/PollyMC/accounts.json | jq .
+cat ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/accounts.json | jq .
+
+# AppImage paths (if not using Flatpak)
+# ~/.local/share/PrismLauncher/minecraftSplitscreen.sh
+# ~/.local/share/PrismLauncher/instances/latestUpdate-1/instance.cfg
 ```

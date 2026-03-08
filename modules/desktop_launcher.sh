@@ -49,9 +49,8 @@
 #
 # ICON HIERARCHY:
 # 1. SteamGridDB custom icon (downloaded, professional appearance)
-# 2. PollyMC instance icon (if PollyMC setup successful)
-# 3. PrismLauncher instance icon (fallback)
-# 4. System generic icon (ultimate fallback)
+# 2. PrismLauncher instance icon (fallback)
+# 3. System generic icon (ultimate fallback)
 #
 # DESKTOP FILE LOCATIONS:
 # - Desktop shortcut: ~/Desktop/MinecraftSplitscreen.desktop

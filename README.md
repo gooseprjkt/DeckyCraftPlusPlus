@@ -1,12 +1,12 @@
 # Minecraft Splitscreen Steam Deck & Linux Installer
 
-This project provides an easy way to set up splitscreen Minecraft on Steam Deck and Linux using an optimized dual-launcher approach. It supports 1–4 players, controller detection, and seamless integration with Steam Game Mode and your desktop environment.
+This project provides an easy way to set up splitscreen Minecraft on Steam Deck and Linux. It supports 1–4 players, controller detection, and seamless integration with Steam Game Mode and your desktop environment.
 
 ## Features
 - **Automatic Java Installation:** Detects required Java version and installs automatically (no manual setup required)
-- **Optimized Installation:** Uses PrismLauncher for automated instance creation, then switches to PollyMC for gameplay
+- **Automated Installation:** Uses PrismLauncher for both instance creation and gameplay
 - **Auto-Generated Launcher Script:** The splitscreen launcher is generated at install time with correct paths baked in - no hardcoded paths
-- **Flatpak & AppImage Support:** Works with both Flatpak and AppImage installations of PollyMC and PrismLauncher
+- **Flatpak & AppImage Support:** Works with both Flatpak and AppImage installations of PrismLauncher
 - **Smart Launcher Detection:** Automatically detects existing launcher installations and uses them
 - Launch 1–4 Minecraft instances in splitscreen mode with proper Fabric support
 - Automatic controller detection and per-player config
@@ -17,6 +17,8 @@ This project provides an easy way to set up splitscreen Minecraft on Steam Deck 
 - **Fabric Loader:** Complete dependency chain implementation ensures mods load and function correctly
 - **Automatic Dependency Resolution:** Uses live API calls to discover and install all mod dependencies without manual maintenance
 - **Smart Cleanup:** Automatically removes temporary files and directories after successful setup
+
+> **Note:** As of February 2026, PollyMC is no longer maintained. PrismLauncher is now used exclusively. A Microsoft account is required for Minecraft Java Edition.
 
 ## Dynamic Splitscreen Mode (v3.0.0)
 
@@ -86,31 +88,11 @@ sudo zypper install inotify-tools xdotool wmctrl libnotify-tools
 - **Java** (automatically installed if not present - no manual setup required)
 
 ## Installation Process
-The installer uses an **optimized hybrid approach** combining the strengths of two different launchers:
 
-### Why the Hybrid Approach?
-
-Both launchers are essentially the same program with one key difference:
-
-**PrismLauncher** has excellent automation but requires Minecraft licenses:
-- ✅ **Excellent CLI automation** - Reliable command-line instance creation
-- ✅ **Robust Fabric integration** - Proper mod loader dependency chains
-- ❌ **Requires Minecraft license** - Must link a paid Microsoft account before creating offline accounts
-
-**PollyMC** is identical but doesn't require licenses:
-- ✅ **No license verification** - Can create offline accounts immediately without any Microsoft account linking
-- ❌ **No CLI automation** - Manual setup required for instances
-
-### Our Solution: Best of Both Worlds
-
-1. **PrismLauncher CLI** - For automated instance creation with proper Fabric setup
-2. **PollyMC** - For splitscreen gameplay (no forced login, offline-friendly)
-3. **Smart Cleanup** - Removes PrismLauncher after successful PollyMC setup
-
-This hybrid approach ensures reliable automated installation while providing the optimal splitscreen gaming experience.
+PrismLauncher handles both automated instance creation and gameplay. It provides excellent CLI automation for reliable instance setup with proper Fabric integration. A Microsoft account is required to launch Minecraft Java Edition through PrismLauncher.
 
 ## What gets installed
-- [PollyMC](https://github.com/fn2006/PollyMC) AppImage (primary launcher)
+- [PrismLauncher](https://prismlauncher.org/) (primary launcher — Flatpak or AppImage)
 - **Minecraft version:** User-selectable (defaults to latest stable release, with 4 separate instances for splitscreen)
 - **Fabric Loader:** Complete dependency chain including LWJGL 3, Minecraft, Intermediary Mappings, and Fabric Loader
 - **Mods included (automatically installed):**
@@ -145,7 +127,7 @@ This hybrid approach ensures reliable automated installation while providing the
 - **Automatic dependency resolution:** Uses Modrinth and CurseForge APIs to automatically discover and install all required mod dependencies
 - **Dependency chain validation:** Proper Fabric Loader setup with LWJGL 3, Intermediary Mappings, and all required dependencies
 - **Fallback mechanisms:** Manual instance creation if CLI fails, with multiple retry strategies
-- **Smart cleanup:** Automatically removes temporary PrismLauncher files after successful PollyMC setup
+- **Smart cleanup:** Automatically removes temporary files after successful setup
 
 ## Installation
 1. **Quick Install (Recommended):**
@@ -164,7 +146,7 @@ This hybrid approach ensures reliable automated installation while providing the
    
    **Note:** The installer will automatically detect which Java version you need based on your selected Minecraft version and install it if not present. No manual Java setup required!
    
-   **Note:** If you already have PollyMC or PrismLauncher installed (via Flatpak or AppImage), the installer will detect and use your existing installation.
+   **Note:** If you already have PrismLauncher installed (via Flatpak or AppImage), the installer will detect and use your existing installation.
 
 2. **Install Python 3 (optional)**
    - Only required if you want to add the launcher to Steam automatically
@@ -196,7 +178,7 @@ This hybrid approach ensures reliable automated installation while providing the
    - **Installation progress:** The installer will show detailed progress including:
      - PrismLauncher download and CLI verification
      - Instance creation (4 separate Minecraft instances for splitscreen)
-     - PollyMC download and configuration
+     - Launcher script generation
      - Automatic Java version detection and installation (if needed)
      - Mod downloads with Fabric compatibility verification
      - Automatic cleanup of temporary files
@@ -246,12 +228,12 @@ If you want to use the Steam Deck's built-in controls as Player 1 AND connect ex
 ## Installation Locations
 
 **AppImage installations:**
-- **Primary installation:** `~/.local/share/PollyMC/` (instances, launcher, and game files)
-- **Launcher script:** `~/.local/share/PollyMC/minecraftSplitscreen.sh` (auto-generated)
+- **Primary installation:** `~/.local/share/PrismLauncher/` (instances, launcher, and game files)
+- **Launcher script:** `~/.local/share/PrismLauncher/minecraftSplitscreen.sh` (auto-generated)
 
 **Flatpak installations:**
-- **Primary installation:** `~/.var/app/org.fn2006.PollyMC/data/PollyMC/`
-- **Launcher script:** `~/.var/app/org.fn2006.PollyMC/data/PollyMC/minecraftSplitscreen.sh` (auto-generated)
+- **Primary installation:** `~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/`
+- **Launcher script:** `~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/minecraftSplitscreen.sh` (auto-generated)
 
 **Note:** The launcher script is automatically generated during installation with the correct paths for your system. It includes version metadata for troubleshooting.
 
@@ -305,8 +287,8 @@ chmod +x cleanup.sh
 ```
 
 The cleanup script removes:
-- PollyMC and PrismLauncher data directories (AppImage and Flatpak)
-- Flatpak applications (PollyMC, PrismLauncher)
+- PrismLauncher data directories (AppImage and Flatpak)
+- PrismLauncher Flatpak application
 - Desktop shortcuts and app menu entries
 - Installer logs
 
@@ -315,14 +297,14 @@ The cleanup script removes:
 ### Manual Uninstall
 
 If you prefer manual removal:
-- **AppImage installations:** Delete the PollyMC folder: `rm -rf ~/.local/share/PollyMC`
-- **Flatpak installations:** Delete the PollyMC data: `rm -rf ~/.var/app/org.fn2006.PollyMC/data/PollyMC`
+- **AppImage installations:** Delete the PrismLauncher folder: `rm -rf ~/.local/share/PrismLauncher`
+- **Flatpak installations:** Delete the PrismLauncher data: `rm -rf ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher`
 - Remove any desktop or Steam shortcuts you created.
 
 ## Credits
 - Inspired by [ArnoldSmith86/minecraft-splitscreen](https://github.com/ArnoldSmith86/minecraft-splitscreen) (original concept/script, but this project is mostly a full rewrite).
 - Additional contributions by [FlyingEwok](https://github.com/FlyingEwok) and others.
-- Uses [PollyMC](https://github.com/fn2006/PollyMC) for gameplay and [PrismLauncher](https://github.com/PrismLauncher/PrismLauncher) for instance creation.
+- Uses [PrismLauncher](https://github.com/PrismLauncher/PrismLauncher) for instance creation and gameplay.
 - Steam Deck Java installation script by [FlyingEwok](https://github.com/FlyingEwok/install-jdk-on-steam-deck) - provides seamless Java installation for Steam Deck's read-only filesystem with automatic version detection.
 - Steam Deck controller auto-disable tool by [scawp](https://github.com/scawp/Steam-Deck.Auto-Disable-Steam-Controller) - optional tool for advanced use cases where you want to use Steam Deck's built-in controls alongside external controllers simultaneously.
 
@@ -333,7 +315,7 @@ If you prefer manual removal:
 - **Complete Fabric Dependency Chain:** Ensures mods load and function correctly by including LWJGL 3, Minecraft, Intermediary Mappings, and Fabric Loader with proper dependency references
 - **API Filtering:** Both Modrinth and CurseForge APIs are filtered to only download Fabric-compatible mod versions
 - **Automatic Dependency Resolution:** Recursively resolves all mod dependencies using live API calls, eliminating the need to manually maintain dependency lists
-- **Optimized Launcher Strategy:** Combines PrismLauncher's reliable CLI automation with PollyMC's offline-friendly gameplay approach
+- **PrismLauncher Integration:** Uses PrismLauncher's reliable CLI automation for both instance creation and gameplay
 - **Smart Cleanup:** Automatically removes temporary build files and directories after successful setup
 - **Enhanced Error Handling:** Multiple fallback mechanisms and retry strategies for robust installation
 
@@ -354,7 +336,7 @@ If you prefer manual removal:
 - ✅ **Architecture-Aware Downloads**: Automatically downloads correct AppImage for x86_64 or ARM64 systems
 - ✅ **Improved Timeout Handling**: Clear indication of user input vs timeout defaults in prompts
 - ✅ **Auto-Generated Launcher Script**: The splitscreen launcher is now generated at install time with correct paths baked in - no more hardcoded paths
-- ✅ **Flatpak Support**: Works with both Flatpak and AppImage installations of PollyMC and PrismLauncher
+- ✅ **Flatpak Support**: Works with both Flatpak and AppImage installations of PrismLauncher
 - ✅ **Smart Launcher Detection**: Automatically detects existing launcher installations and uses them instead of downloading new ones
 - ✅ **Version Metadata**: Generated scripts include version, commit hash, and generation date for easier troubleshooting
 - ✅ **Automatic Java Installation**: No manual Java setup required - the installer automatically detects, downloads, and installs the correct Java version for your chosen Minecraft version
