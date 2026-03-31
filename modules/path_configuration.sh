@@ -275,29 +275,31 @@ configure_launcher_paths() {
     # LAUNCHER DETECTION
     # =========================================================================
 
-    # PrismLauncher is the sole launcher for both instance creation and gameplay
+    # Use the launcher from vars.sh (PineconeMC or PrismLauncher)
+    local launcher_name="${LAUNCHER_NAME:-PineconeMC}"
+    
     if detect_prismlauncher; then
-        CREATION_LAUNCHER="prismlauncher"
+        CREATION_LAUNCHER="$launcher_name"
         CREATION_LAUNCHER_TYPE="$PRISM_TYPE"
         CREATION_DATA_DIR="$PRISM_DATA_DIR"
         CREATION_INSTANCES_DIR="$PRISM_DATA_DIR/instances"
         CREATION_EXECUTABLE="$PRISM_EXECUTABLE"
-        print_success "Creation launcher: PrismLauncher ($PRISM_TYPE)"
+        print_success "Creation launcher: $launcher_name ($PRISM_TYPE)"
         print_info "  Data directory: $CREATION_DATA_DIR"
         print_info "  Instances: $CREATION_INSTANCES_DIR"
 
-        ACTIVE_LAUNCHER="prismlauncher"
+        ACTIVE_LAUNCHER="$launcher_name"
         ACTIVE_LAUNCHER_TYPE="$PRISM_TYPE"
         ACTIVE_DATA_DIR="$PRISM_DATA_DIR"
         ACTIVE_INSTANCES_DIR="$PRISM_DATA_DIR/instances"
         ACTIVE_EXECUTABLE="$PRISM_EXECUTABLE"
         ACTIVE_LAUNCHER_SCRIPT="$PRISM_DATA_DIR/minecraftSplitscreen.sh"
-        print_success "Active launcher: PrismLauncher ($PRISM_TYPE)"
+        print_success "Active launcher: $launcher_name ($PRISM_TYPE)"
         print_info "  Data directory: $ACTIVE_DATA_DIR"
         print_info "  Launcher script: $ACTIVE_LAUNCHER_SCRIPT"
     else
         CREATION_LAUNCHER=""
-        print_warning "No PrismLauncher detected - will attempt download"
+        print_warning "No $launcher_name detected - will attempt download"
     fi
 
     # NOTE: Directories are NOT created here during detection phase.
