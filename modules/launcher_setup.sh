@@ -118,12 +118,26 @@ download_launcher() {
 
             local flatpak_installed=false
 
+            # Check if this is PineconeMC (ElyPrismLauncher) with custom repo
+            if [[ "${LAUNCHER_NAME:-}" == "PineconeMC" ]] && [[ -n "${LAUNCHER_FLATPAK_REF:-}" ]]; then
+                print_info "Adding PineconeMC Flatpak repository..."
+                # Add the custom Flatpak repo
+                if flatpak remote-add --if-not-exists --system elyprismlauncher "${LAUNCHER_FLATPAK_REF}" 2>/dev/null || \
+                   flatpak remote-add --if-not-exists --user elyprismlauncher "${LAUNCHER_FLATPAK_REF}" 2>/dev/null; then
+                    print_success "PineconeMC Flatpak repository added"
+                fi
+            fi
+
             # Try system-level install first (works on Bazzite/SteamOS where Flathub is system-only)
             # Use --system explicitly to avoid flatpak's remote selection prompt when both system
             # and user flathub remotes exist. This may prompt for authentication on some systems.
             if flatpak install --system -y flathub "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
                 flatpak_installed=true
                 print_success "${LAUNCHER_NAME} Flatpak installed (system)"
+            # Try custom repo (for PineconeMC)
+            elif flatpak install --system -y elyprismlauncher "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+                flatpak_installed=true
+                print_success "${LAUNCHER_NAME} Flatpak installed from custom repo (system)"
             else
                 # Fall back to user-level install
                 # First ensure Flathub repo is available for user
@@ -135,6 +149,10 @@ download_launcher() {
                 if flatpak install --user -y flathub "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
                     flatpak_installed=true
                     print_success "${LAUNCHER_NAME} Flatpak installed (user)"
+                # Try custom repo for user
+                elif flatpak install --user -y elyprismlauncher "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+                    flatpak_installed=true
+                    print_success "${LAUNCHER_NAME} Flatpak installed from custom repo (user)"
                 fi
             fi
 

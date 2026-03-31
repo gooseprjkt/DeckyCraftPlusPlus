@@ -39,9 +39,11 @@ readonly ACTIVE_LAUNCHER_NAME="pineconemc"
 # =============================================================================
 # PineconeMC is a fork of PrismLauncher with additional features
 # GitHub: https://github.com/ElyPrismLauncher/Launcher
+# Flatpak: https://elyprismlauncher.github.io/elyprismlauncher.flatpakref
 
 readonly PINECONEMC_NAME="PineconeMC"
-readonly PINECONEMC_FLATPAK_ID="org.prismlauncher.PrismLauncher"  # Uses same Flatpak ID as PrismLauncher
+readonly PINECONEMC_FLATPAK_ID="org.elyprismlauncher.ElyPrismLauncher"
+readonly PINECONEMC_FLATPAK_REF="https://elyprismlauncher.github.io/elyprismlauncher.flatpakref"
 readonly PINECONEMC_APPIMAGE_DATA_DIR="$HOME/.local/share/PineconeMC"
 readonly PINECONEMC_FLATPAK_DATA_DIR="$HOME/.var/app/${PINECONEMC_FLATPAK_ID}/data/PineconeMC"
 readonly PINECONEMC_APPIMAGE_PATH="$PINECONEMC_APPIMAGE_DATA_DIR/PineconeMC.AppImage"
@@ -53,6 +55,9 @@ readonly PINECONEMC_APPIMAGE_URL="https://github.com/ElyPrismLauncher/Launcher/r
 
 # PineconeMC GitHub API URL for version detection
 readonly PINECONEMC_API_URL="https://api.github.com/repos/ElyPrismLauncher/Launcher"
+
+# PineconeMC Flatpak repository
+readonly PINECONEMC_FLATPAK_REPO_URL="https://elyprismlauncher.github.io/elyprismlauncher.flatpakref"
 
 # =============================================================================
 # PRISMLAUNCHER CONFIGURATION (Fallback/Alternative)
