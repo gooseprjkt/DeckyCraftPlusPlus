@@ -323,27 +323,27 @@ verify_cli() {
 
     # Check if help command worked
     if [[ $exit_code -ne 0 ]]; then
-        print_warning "${LAUNCHER_NAME} execution failed, using manual instance creation"
+        print_warning "${LAUNCHER_NAME:-Launcher} execution failed, using manual instance creation"
         print_info "Error output: $(echo "$help_output" | head -3)"
         return 1
     fi
 
     # Test for CLI support by checking help output
     if ! echo "$help_output" | grep -q -E "(cli|create|instance)"; then
-        print_warning "${LAUNCHER_NAME} CLI may not support instance creation. Checking with --help-all..."
+        print_warning "${LAUNCHER_NAME:-Launcher} CLI may not support instance creation. Checking with --help-all..."
 
         local extended_help
         extended_help=$($launcher_exec --help-all 2>&1)
         if ! echo "$extended_help" | grep -q -E "(cli|create-instance)"; then
-            print_warning "This version of ${LAUNCHER_NAME} does not support CLI instance creation"
+            print_warning "This version of ${LAUNCHER_NAME:-Launcher} does not support CLI instance creation"
             print_info "Will use manual instance creation method instead"
             return 1
         fi
     fi
 
-    print_info "Available ${LAUNCHER_NAME} CLI commands:"
+    print_info "Available ${LAUNCHER_NAME:-Launcher} CLI commands:"
     echo "$help_output" | grep -E "(create|instance|cli)" || echo "  (Basic CLI commands found)"
-    print_success "${LAUNCHER_NAME} CLI instance creation verified ($CREATION_LAUNCHER_TYPE)"
+    print_success "${LAUNCHER_NAME:-Launcher} CLI instance creation verified ($CREATION_LAUNCHER_TYPE)"
     return 0
 }
 

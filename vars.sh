@@ -205,9 +205,9 @@ is_launcher_flatpak() {
 get_launcher_data_dir() {
     local type="$1"
     if is_launcher_flatpak "$type"; then
-        echo "$LAUNCHER_FLATPAK_DATA_DIR"
+        echo "${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/PineconeMC}"
     else
-        echo "$LAUNCHER_APPIMAGE_DATA_DIR"
+        echo "${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
     fi
 }
 
@@ -230,10 +230,10 @@ get_launcher_instances_dir() {
 # @return      0 always
 # -----------------------------------------------------------------------------
 print_launcher_info() {
-    echo "Active Launcher: $LAUNCHER_NAME"
-    echo "AppImage Path: $LAUNCHER_APPIMAGE_PATH"
-    echo "Flatpak ID: $LAUNCHER_FLATPAK_ID"
-    if [[ -n "$LAUNCHER_VERSION" ]]; then
+    echo "Active Launcher: ${LAUNCHER_NAME:-PineconeMC}"
+    echo "AppImage Path: ${LAUNCHER_APPIMAGE_PATH:-$HOME/.local/share/PineconeMC/PineconeMC.AppImage}"
+    echo "Flatpak ID: ${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
+    if [[ -n "${LAUNCHER_VERSION:-}" ]]; then
         echo "Version: $LAUNCHER_VERSION"
     fi
 }
