@@ -325,14 +325,14 @@ set_creation_launcher() {
     local executable="$2"
 
     # Use LAUNCHER_NAME from vars.sh (pineconemc or prismlauncher)
-    local launcher_name="${LAUNCHER_NAME:-prismlauncher}"
+    local launcher_name="${LAUNCHER_NAME:-PineconeMC}"
     CREATION_LAUNCHER="$launcher_name"
     CREATION_LAUNCHER_TYPE="$type"
 
     if [[ "$type" == "appimage" ]]; then
-        CREATION_DATA_DIR="$LAUNCHER_APPIMAGE_DATA_DIR"
+        CREATION_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
     else
-        CREATION_DATA_DIR="$LAUNCHER_FLATPAK_DATA_DIR"
+        CREATION_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/PineconeMC}"
     fi
 
     CREATION_INSTANCES_DIR="$CREATION_DATA_DIR/instances"
