@@ -96,15 +96,24 @@ LAUNCHER_EXECUTABLE=""
 # @sideeffect  Calls set_creation_launcher() to update paths
 # -----------------------------------------------------------------------------
 download_launcher() {
-    print_progress "Detecting ${LAUNCHER_NAME:-launcher} installation..."
+    # Ensure LAUNCHER_* variables are set with fallbacks
+    local launcher_name="${LAUNCHER_NAME:-PineconeMC}"
+    local launcher_flatpak_id="${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}"
+    local launcher_flatpak_data_dir="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}/data/PineconeMC}"
+    local launcher_appimage_data_dir="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
+    local launcher_appimage_path="${LAUNCHER_APPIMAGE_PATH:-$HOME/.local/share/PineconeMC/PineconeMC.AppImage}"
+    local launcher_appimage_url="${LAUNCHER_APPIMAGE_URL:-}"
+    local launcher_api_url="${LAUNCHER_API_URL:-https://api.github.com/repos/ElyPrismLauncher/Launcher}"
+
+    print_progress "Detecting ${launcher_name} installation..."
 
     # Priority 1: Check for existing Flatpak installation
-    if is_flatpak_installed "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
-        print_success "Found existing ${LAUNCHER_NAME} Flatpak installation"
+    if is_flatpak_installed "$launcher_flatpak_id" 2>/dev/null; then
+        print_success "Found existing ${launcher_name} Flatpak installation"
 
-        mkdir -p "$LAUNCHER_FLATPAK_DATA_DIR/instances"
-        set_creation_launcher "flatpak" "flatpak run $LAUNCHER_FLATPAK_ID"
-        print_info "   → Using Flatpak data directory: $LAUNCHER_FLATPAK_DATA_DIR"
+        mkdir -p "$launcher_flatpak_data_dir/instances"
+        set_creation_launcher "flatpak" "flatpak run $launcher_flatpak_id"
+        print_info "   → Using Flatpak data directory: $launcher_flatpak_data_dir"
         return 0
     fi
 
@@ -114,12 +123,12 @@ download_launcher() {
         print_info "Immutable OS detected - preferring Flatpak installation"
 
         if command -v flatpak &>/dev/null; then
-            print_progress "Installing ${LAUNCHER_NAME} via Flatpak..."
+            print_progress "Installing ${launcher_name} via Flatpak..."
 
             local flatpak_installed=false
 
             # Check if this is PineconeMC (ElyPrismLauncher) with custom repo
-            if [[ "${LAUNCHER_NAME:-}" == "PineconeMC" ]] && [[ -n "${LAUNCHER_FLATPAK_REF:-}" ]]; then
+            if [[ "${launcher_name:-}" == "PineconeMC" ]] && [[ -n "${LAUNCHER_FLATPAK_REF:-}" ]]; then
                 print_info "Adding PineconeMC Flatpak repository..."
                 # Add the custom Flatpak repo
                 if flatpak remote-add --if-not-exists --system elyprismlauncher "${LAUNCHER_FLATPAK_REF}" 2>/dev/null || \
@@ -131,13 +140,13 @@ download_launcher() {
             # Try system-level install first (works on Bazzite/SteamOS where Flathub is system-only)
             # Use --system explicitly to avoid flatpak's remote selection prompt when both system
             # and user flathub remotes exist. This may prompt for authentication on some systems.
-            if flatpak install --system -y flathub "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+            if flatpak install --system -y flathub "$launcher_flatpak_id" 2>/dev/null; then
                 flatpak_installed=true
-                print_success "${LAUNCHER_NAME} Flatpak installed (system)"
+                print_success "${launcher_name} Flatpak installed (system)"
             # Try custom repo (for PineconeMC)
-            elif flatpak install --system -y elyprismlauncher "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+            elif flatpak install --system -y elyprismlauncher "$launcher_flatpak_id" 2>/dev/null; then
                 flatpak_installed=true
-                print_success "${LAUNCHER_NAME} Flatpak installed from custom repo (system)"
+                print_success "${launcher_name} Flatpak installed from custom repo (system)"
             else
                 # Fall back to user-level install
                 # First ensure Flathub repo is available for user
@@ -146,20 +155,20 @@ download_launcher() {
                     flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo 2>/dev/null || true
                 fi
 
-                if flatpak install --user -y flathub "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+                if flatpak install --user -y flathub "$launcher_flatpak_id" 2>/dev/null; then
                     flatpak_installed=true
-                    print_success "${LAUNCHER_NAME} Flatpak installed (user)"
+                    print_success "${launcher_name} Flatpak installed (user)"
                 # Try custom repo for user
-                elif flatpak install --user -y elyprismlauncher "$LAUNCHER_FLATPAK_ID" 2>/dev/null; then
+                elif flatpak install --user -y elyprismlauncher "$launcher_flatpak_id" 2>/dev/null; then
                     flatpak_installed=true
-                    print_success "${LAUNCHER_NAME} Flatpak installed from custom repo (user)"
+                    print_success "${launcher_name} Flatpak installed from custom repo (user)"
                 fi
             fi
 
             if [[ "$flatpak_installed" == true ]]; then
-                mkdir -p "$LAUNCHER_FLATPAK_DATA_DIR/instances"
-                set_creation_launcher "flatpak" "flatpak run $LAUNCHER_FLATPAK_ID"
-                print_info "   → Using Flatpak data directory: $LAUNCHER_FLATPAK_DATA_DIR"
+                mkdir -p "$launcher_flatpak_data_dir/instances"
+                set_creation_launcher "flatpak" "flatpak run $launcher_flatpak_id"
+                print_info "   → Using Flatpak data directory: $launcher_flatpak_data_dir"
                 return 0
             else
                 print_warning "Flatpak installation failed - falling back to AppImage"
@@ -170,37 +179,37 @@ download_launcher() {
     fi
 
     # Priority 3: Check for existing AppImage
-    if [[ -f "$LAUNCHER_APPIMAGE_PATH" ]]; then
-        print_success "${LAUNCHER_NAME} AppImage already present"
+    if [[ -f "$launcher_appimage_path" ]]; then
+        print_success "${launcher_name} AppImage already present"
 
-        set_creation_launcher "appimage" "$LAUNCHER_APPIMAGE_PATH"
+        set_creation_launcher "appimage" "$launcher_appimage_path"
         return 0
     fi
 
     # Priority 4: Download AppImage
-    print_progress "No existing ${LAUNCHER_NAME} found - downloading AppImage..."
+    print_progress "No existing ${launcher_name} found - downloading AppImage..."
 
     # Use direct URL from vars.sh if available (PineconeMC has fixed URL)
-    local appimage_url="$LAUNCHER_APPIMAGE_URL"
+    local appimage_url="$launcher_appimage_url"
 
     # If no direct URL (PrismLauncher), query GitHub API for latest release
-    if [[ -z "$appimage_url" ]] && [[ -n "$LAUNCHER_API_URL" ]]; then
-        print_info "Querying GitHub API for latest ${LAUNCHER_NAME} release..."
+    if [[ -z "$appimage_url" ]] && [[ -n "$launcher_api_url" ]]; then
+        print_info "Querying GitHub API for latest ${launcher_name} release..."
         local arch
         arch=$(uname -m)
 
-        appimage_url=$(curl -s "${LAUNCHER_API_URL}/releases/latest" | \
+        appimage_url=$(curl -s "${launcher_api_url}/releases/latest" | \
             jq -r --arg arch "$arch" '.assets[] | select(.name | test("AppImage$")) | select(.name | contains($arch)) | .browser_download_url' | head -n1)
 
         if [[ -z "$appimage_url" || "$appimage_url" == "null" ]]; then
-            print_error "Could not find latest ${LAUNCHER_NAME} AppImage URL."
+            print_error "Could not find latest ${launcher_name} AppImage URL."
             print_error "Please check the releases page manually."
             exit 1
         fi
     fi
 
     if [[ -z "$appimage_url" ]]; then
-        print_error "No download URL available for ${LAUNCHER_NAME}."
+        print_error "No download URL available for ${launcher_name}."
         print_error "Please check vars.sh configuration."
         exit 1
     fi
@@ -211,20 +220,20 @@ download_launcher() {
 
     print_progress "Downloading from: $appimage_url"
     if ! wget -q -O "$temp_appimage" "$appimage_url"; then
-        print_error "Failed to download ${LAUNCHER_NAME} AppImage."
+        print_error "Failed to download ${launcher_name} AppImage."
         rm -f "$temp_appimage" 2>/dev/null
         exit 1
     fi
 
     # Download successful - now create directory and move file
-    mkdir -p "$LAUNCHER_APPIMAGE_DATA_DIR"
-    mv "$temp_appimage" "$LAUNCHER_APPIMAGE_PATH"
-    chmod +x "$LAUNCHER_APPIMAGE_PATH"
+    mkdir -p "$launcher_appimage_data_dir"
+    mv "$temp_appimage" "$launcher_appimage_path"
+    chmod +x "$launcher_appimage_path"
 
-    set_creation_launcher "appimage" "$LAUNCHER_APPIMAGE_PATH"
-    print_success "${LAUNCHER_NAME} AppImage downloaded successfully"
+    set_creation_launcher "appimage" "$launcher_appimage_path"
+    print_success "${launcher_name} AppImage downloaded successfully"
     print_info "   → Installation type: appimage"
-    print_info "   → Location: $LAUNCHER_APPIMAGE_PATH"
+    print_info "   → Location: $launcher_appimage_path"
 }
 
 # -----------------------------------------------------------------------------
@@ -260,14 +269,16 @@ verify_cli() {
 
     # Determine the executable based on installation type
     if [[ "$CREATION_LAUNCHER_TYPE" == "flatpak" ]]; then
-        launcher_exec="flatpak run $LAUNCHER_FLATPAK_ID"
+        # Use LAUNCHER_FLATPAK_ID from vars.sh with fallback
+        local flatpak_id="${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}"
+        launcher_exec="flatpak run $flatpak_id"
         print_info "   → Testing Flatpak CLI..."
 
         help_output=$($launcher_exec --help 2>&1)
         exit_code=$?
 
         if [[ $exit_code -ne 0 ]]; then
-            print_warning "${LAUNCHER_NAME} Flatpak CLI test failed"
+            print_warning "${LAUNCHER_NAME:-Launcher} Flatpak CLI test failed"
             print_info "Error output: $(echo "$help_output" | head -3)"
             return 1
         fi
