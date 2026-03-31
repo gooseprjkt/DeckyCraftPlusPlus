@@ -2,9 +2,9 @@
 # =============================================================================
 # Minecraft Splitscreen Steam Deck Installer - MODULAR VERSION
 # =============================================================================
-# Version: 3.0.0 (commit: auto-populated at runtime)
-# Last Modified: 2026-01-23
-# Source: https://github.com/aradanmn/MinecraftSplitscreenSteamdeck
+# Version: 3.1.1 (commit: auto-populated at runtime)
+# Last Modified: 2026-03-31
+# Source: https://github.com/gooseprjkt/DeckyCraftPlusPlus
 #
 # This is the new, clean modular entry point for the Minecraft Splitscreen installer.
 # All functionality has been moved to organized modules for better maintainability.
@@ -21,13 +21,14 @@
 # - Comprehensive Steam and desktop integration
 # - Auto-generated launcher script with correct paths
 # - Support for both AppImage and Flatpak launchers
+# - PineconeMC support (configurable via vars.sh)
 #
 # No additional setup, Java installation, token files, or module downloads required - just run this script.
 # Modules are downloaded temporarily and automatically cleaned up when the script completes.
 #
 # Usage:
-#   # Standard (uses default repository: aradanmn/MinecraftSplitscreenSteamdeck, branch: main)
-#   curl -fsSL https://raw.githubusercontent.com/aradanmn/MinecraftSplitscreenSteamdeck/main/install-minecraft-splitscreen.sh | bash
+#   # Standard (uses default repository: gooseprjkt/DeckyCraftPlusPlus, branch: main)
+#   curl -fsSL https://raw.githubusercontent.com/gooseprjkt/DeckyCraftPlusPlus/main/install-minecraft-splitscreen.sh | bash
 #
 #   # From a fork or different branch (auto-detects from URL via environment variable)
 #   URL="https://raw.githubusercontent.com/OWNER/REPO/BRANCH/install-minecraft-splitscreen.sh"
@@ -95,14 +96,26 @@ MODULES_DIR="$(mktemp -d -t minecraft-modules-XXXXXX)"
 # REPOSITORY CONFIGURATION
 # =============================================================================
 # Default values - used when running locally or when URL parsing fails
-DEFAULT_REPO_OWNER="aradanmn"
-DEFAULT_REPO_NAME="MinecraftSplitscreenSteamdeck"
+DEFAULT_REPO_OWNER="gooseprjkt"
+DEFAULT_REPO_NAME="DeckyCraftPlusPlus"
 DEFAULT_REPO_BRANCH="main"
 
 # Initialize with defaults
 BOOTSTRAP_REPO_OWNER="$DEFAULT_REPO_OWNER"
 BOOTSTRAP_REPO_NAME="$DEFAULT_REPO_NAME"
 BOOTSTRAP_REPO_BRANCH="$DEFAULT_REPO_BRANCH"
+
+# Load buildvars.sh FIRST for repository URL configuration
+# This ensures we download modules from the correct repository (not upstream)
+if [[ -f "$SCRIPT_DIR/buildvars.sh" ]]; then
+    source "$SCRIPT_DIR/buildvars.sh"
+    echo "📍 Loaded build configuration from buildvars.sh"
+    echo "   Repository: $BUILD_REPO_OWNER/$BUILD_REPO_NAME ($BUILD_REPO_BRANCH)"
+    # Override bootstrap URLs with buildvars values
+    BOOTSTRAP_REPO_OWNER="$BUILD_REPO_OWNER"
+    BOOTSTRAP_REPO_NAME="$BUILD_REPO_NAME"
+    BOOTSTRAP_REPO_BRANCH="$BUILD_REPO_BRANCH"
+fi
 
 # Load vars.sh for launcher configuration (PineconeMC/PrismLauncher settings)
 # This must be done before module loading
@@ -133,7 +146,17 @@ parse_github_raw_url() {
 # @function detect_source_url
 # @description Attempts to detect the URL used to download this script
 # @return Sets repository variables if URL can be determined
+# @note If buildvars.sh was loaded, those values take precedence
 detect_source_url() {
+    # If buildvars.sh was loaded, use those values and skip detection
+    if [[ -n "${BUILD_REPO_OWNER:-}" ]]; then
+        echo "📍 Using repository from buildvars.sh: $BUILD_REPO_OWNER/$BUILD_REPO_NAME ($BUILD_REPO_BRANCH)"
+        BOOTSTRAP_REPO_OWNER="$BUILD_REPO_OWNER"
+        BOOTSTRAP_REPO_NAME="$BUILD_REPO_NAME"
+        BOOTSTRAP_REPO_BRANCH="$BUILD_REPO_BRANCH"
+        return 0
+    fi
+
     # Method 1: Check for --source-url argument
     # Usage: curl URL | bash -s -- --source-url URL
     local i=1

@@ -50,17 +50,18 @@
 # =============================================================================
 
 # Script version - update this when making releases
-readonly SCRIPT_VERSION="3.1.0"
+readonly SCRIPT_VERSION="3.1.1"
 
 # Repository information
-readonly REPO_OWNER="aradanmn"
-readonly REPO_NAME="MinecraftSplitscreenSteamdeck"
-readonly REPO_BRANCH="main"
+# These are defaults - can be overridden by buildvars.sh
+readonly REPO_OWNER="${BUILD_REPO_OWNER:-gooseprjkt}"
+readonly REPO_NAME="${BUILD_REPO_NAME:-DeckyCraftPlusPlus}"
+readonly REPO_BRANCH="${BUILD_REPO_BRANCH:-main}"
 
 # Derived URLs
 readonly REPO_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}"
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}"
-readonly REPO_MODULES_URL="${REPO_RAW_URL}/modules"
+readonly REPO_RAW_URL="${BUILD_REPO_RAW_URL:-https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}}"
+readonly REPO_MODULES_URL="${BUILD_REPO_MODULES_URL:-${REPO_RAW_URL}/modules}"
 
 # =============================================================================
 # VERSION UTILITY FUNCTIONS

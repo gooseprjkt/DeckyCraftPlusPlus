@@ -1,7 +1,7 @@
 # Minecraft Splitscreen — Steam Deck & Linux
 
 Automated installer for 1–4 player splitscreen Minecraft on Steam Deck and Linux.
-Uses [PrismLauncher](https://prismlauncher.org/) with Fabric. A Microsoft account is required.
+Uses [PineconeMC](https://github.com/ElyPrismLauncher/Launcher) with Fabric. A Microsoft account is required.
 
 ## Quick Install
 
