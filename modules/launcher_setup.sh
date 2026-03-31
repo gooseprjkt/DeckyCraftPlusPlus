@@ -297,7 +297,7 @@ verify_cli() {
 
             # Try extracting AppImage to avoid FUSE dependency
             print_progress "Attempting to extract AppImage contents..."
-            cd "$CREATION_DATA_DIR"
+            cd "$CREATION_DATA_DIR" || return 1
             local extracted_path="$CREATION_DATA_DIR/squashfs-root/AppRun"
             if "$appimage" --appimage-extract >/dev/null 2>&1; then
                 if [[ -d "$CREATION_DATA_DIR/squashfs-root" ]] && [[ -x "$extracted_path" ]]; then
