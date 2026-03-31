@@ -39,11 +39,11 @@ readonly ACTIVE_LAUNCHER_NAME="pineconemc"
 # =============================================================================
 # PineconeMC is a fork of PrismLauncher with additional features
 # GitHub: https://github.com/ElyPrismLauncher/Launcher
-# Flatpak: https://elyprismlauncher.github.io/elyprismlauncher.flatpakref
+# Flatpak: https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref
 
 readonly PINECONEMC_NAME="PineconeMC"
-readonly PINECONEMC_FLATPAK_ID="org.elyprismlauncher.ElyPrismLauncher"
-readonly PINECONEMC_FLATPAK_REF="https://elyprismlauncher.github.io/elyprismlauncher.flatpakref"
+readonly PINECONEMC_FLATPAK_ID="io.github.elyprismlauncher.ElyPrismLauncher"
+readonly PINECONEMC_FLATPAK_REF="https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref"
 readonly PINECONEMC_APPIMAGE_DATA_DIR="$HOME/.local/share/PineconeMC"
 readonly PINECONEMC_FLATPAK_DATA_DIR="$HOME/.var/app/${PINECONEMC_FLATPAK_ID}/data/PineconeMC"
 readonly PINECONEMC_APPIMAGE_PATH="$PINECONEMC_APPIMAGE_DATA_DIR/PineconeMC.AppImage"
@@ -57,7 +57,7 @@ readonly PINECONEMC_APPIMAGE_URL="https://github.com/ElyPrismLauncher/Launcher/r
 readonly PINECONEMC_API_URL="https://api.github.com/repos/ElyPrismLauncher/Launcher"
 
 # PineconeMC Flatpak repository
-readonly PINECONEMC_FLATPAK_REPO_URL="https://elyprismlauncher.github.io/elyprismlauncher.flatpakref"
+readonly PINECONEMC_FLATPAK_REPO_URL="https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref"
 
 # =============================================================================
 # PRISMLAUNCHER CONFIGURATION (Fallback/Alternative)
@@ -85,6 +85,7 @@ get_launcher_config() {
         "pineconemc")
             LAUNCHER_NAME="$PINECONEMC_NAME"
             LAUNCHER_FLATPAK_ID="$PINECONEMC_FLATPAK_ID"
+            LAUNCHER_FLATPAK_REF="$PINECONEMC_FLATPAK_REF"
             LAUNCHER_APPIMAGE_DATA_DIR="$PINECONEMC_APPIMAGE_DATA_DIR"
             LAUNCHER_FLATPAK_DATA_DIR="$PINECONEMC_FLATPAK_DATA_DIR"
             LAUNCHER_APPIMAGE_PATH="$PINECONEMC_APPIMAGE_PATH"

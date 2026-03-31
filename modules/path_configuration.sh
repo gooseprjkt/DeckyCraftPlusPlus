@@ -78,35 +78,33 @@
 # LOAD LAUNCHER VARIABLES
 # =============================================================================
 # Source vars.sh for launcher configuration (if not already loaded)
-if [[ -z "${LAUNCHER_NAME:-}" ]]; then
-    # Try to source vars.sh from script directory or parent directory
-    if [[ -f "${SCRIPT_DIR:-}/vars.sh" ]]; then
-        source "${SCRIPT_DIR}/vars.sh"
-    elif [[ -f "${SCRIPT_DIR:-}/../vars.sh" ]]; then
-        source "${SCRIPT_DIR}/../vars.sh"
-    elif [[ -f "./vars.sh" ]]; then
-        source "./vars.sh"
-    fi
+# Always source vars.sh to ensure LAUNCHER_* variables are set
+if [[ -f "${SCRIPT_DIR:-}/vars.sh" ]]; then
+    source "${SCRIPT_DIR}/vars.sh"
+elif [[ -f "${SCRIPT_DIR:-}/../vars.sh" ]]; then
+    source "${SCRIPT_DIR}/../vars.sh"
+elif [[ -f "./vars.sh" ]]; then
+    source "./vars.sh"
 fi
 
 # =============================================================================
 # LAUNCHER IDENTIFIERS (Constants - from vars.sh)
 # =============================================================================
-# Use LAUNCHER_FLATPAK_ID from vars.sh (defaults to PineconeMC or PrismLauncher)
+# Use LAUNCHER_FLATPAK_ID from vars.sh (defaults to PineconeMC)
 # Fallback if vars.sh wasn't loaded
-readonly PRISM_FLATPAK_ID="${LAUNCHER_FLATPAK_ID:-org.prismlauncher.PrismLauncher}"
+readonly PRISM_FLATPAK_ID="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
 
 # =============================================================================
 # BASE PATH DEFINITIONS (Constants - from vars.sh)
 # =============================================================================
 # AppImage data directories (where AppImage launchers store their data)
-readonly PRISM_APPIMAGE_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PrismLauncher}"
+readonly PRISM_APPIMAGE_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
 
 # Flatpak data directories (where Flatpak launchers store their data)
-readonly PRISM_FLATPAK_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${PRISM_FLATPAK_ID}/data/PrismLauncher}"
+readonly PRISM_FLATPAK_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${PRISM_FLATPAK_ID}/data/PineconeMC}"
 
 # AppImage executable location
-readonly PRISM_APPIMAGE_PATH="${LAUNCHER_APPIMAGE_PATH:-$PRISM_APPIMAGE_DATA_DIR/PrismLauncher.AppImage}"
+readonly PRISM_APPIMAGE_PATH="${LAUNCHER_APPIMAGE_PATH:-$PRISM_APPIMAGE_DATA_DIR/PineconeMC.AppImage}"
 
 # =============================================================================
 # SYSTEM DETECTION VARIABLES

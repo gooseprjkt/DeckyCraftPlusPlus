@@ -98,12 +98,13 @@ LAUNCHER_EXECUTABLE=""
 download_launcher() {
     # Ensure LAUNCHER_* variables are set with fallbacks
     local launcher_name="${LAUNCHER_NAME:-PineconeMC}"
-    local launcher_flatpak_id="${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}"
-    local launcher_flatpak_data_dir="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}/data/PineconeMC}"
+    local launcher_flatpak_id="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
+    local launcher_flatpak_data_dir="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}/data/PineconeMC}"
     local launcher_appimage_data_dir="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
     local launcher_appimage_path="${LAUNCHER_APPIMAGE_PATH:-$HOME/.local/share/PineconeMC/PineconeMC.AppImage}"
     local launcher_appimage_url="${LAUNCHER_APPIMAGE_URL:-}"
     local launcher_api_url="${LAUNCHER_API_URL:-https://api.github.com/repos/ElyPrismLauncher/Launcher}"
+    local launcher_flatpak_ref="${LAUNCHER_FLATPAK_REF:-https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref}"
 
     print_progress "Detecting ${launcher_name} installation..."
 
@@ -128,11 +129,11 @@ download_launcher() {
             local flatpak_installed=false
 
             # Check if this is PineconeMC (ElyPrismLauncher) with custom repo
-            if [[ "${launcher_name:-}" == "PineconeMC" ]] && [[ -n "${LAUNCHER_FLATPAK_REF:-}" ]]; then
+            if [[ "${launcher_name:-}" == "PineconeMC" ]] && [[ -n "${launcher_flatpak_ref:-}" ]]; then
                 print_info "Adding PineconeMC Flatpak repository..."
                 # Add the custom Flatpak repo
-                if flatpak remote-add --if-not-exists --system elyprismlauncher "${LAUNCHER_FLATPAK_REF}" 2>/dev/null || \
-                   flatpak remote-add --if-not-exists --user elyprismlauncher "${LAUNCHER_FLATPAK_REF}" 2>/dev/null; then
+                if flatpak remote-add --if-not-exists --system elyprismlauncher "${launcher_flatpak_ref}" 2>/dev/null || \
+                   flatpak remote-add --if-not-exists --user elyprismlauncher "${launcher_flatpak_ref}" 2>/dev/null; then
                     print_success "PineconeMC Flatpak repository added"
                 fi
             fi
@@ -270,7 +271,7 @@ verify_cli() {
     # Determine the executable based on installation type
     if [[ "$CREATION_LAUNCHER_TYPE" == "flatpak" ]]; then
         # Use LAUNCHER_FLATPAK_ID from vars.sh with fallback
-        local flatpak_id="${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}"
+        local flatpak_id="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
         launcher_exec="flatpak run $flatpak_id"
         print_info "   → Testing Flatpak CLI..."
 

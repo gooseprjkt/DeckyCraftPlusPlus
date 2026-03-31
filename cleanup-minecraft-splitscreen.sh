@@ -43,9 +43,9 @@ FORCE=false
 KEEP_JAVA=true  # Default to keeping Java (it's useful for other things)
 
 # Flatpak IDs (use LAUNCHER_FLATPAK_ID from vars.sh if available)
-readonly LAUNCHER_FLATPAK_ID_VAR="${LAUNCHER_FLATPAK_ID:-org.elyprismlauncher.ElyPrismLauncher}"
+readonly LAUNCHER_FLATPAK_ID_VAR="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
 readonly PRISM_FLATPAK_ID="org.prismlauncher.PrismLauncher"
-readonly PINECONEMC_FLATPAK_ID="org.elyprismlauncher.ElyPrismLauncher"
+readonly PINECONEMC_FLATPAK_ID="io.github.elyprismlauncher.ElyPrismLauncher"
 
 # Data directories to clean
 PATHS_TO_CLEAN=(
