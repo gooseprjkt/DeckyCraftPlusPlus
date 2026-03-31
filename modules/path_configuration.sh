@@ -90,7 +90,7 @@ fi
 # =============================================================================
 # LAUNCHER IDENTIFIERS (Constants - from vars.sh)
 # =============================================================================
-# Use LAUNCHER_FLATPAK_ID from vars.sh (defaults to PineconeMC)
+# Use LAUNCHER_FLATPAK_ID from vars.sh (defaults to ElyPrismLauncher)
 # Fallback if vars.sh wasn't loaded
 readonly PRISM_FLATPAK_ID="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
 
@@ -98,13 +98,14 @@ readonly PRISM_FLATPAK_ID="${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.Ely
 # BASE PATH DEFINITIONS (Constants - from vars.sh)
 # =============================================================================
 # AppImage data directories (where AppImage launchers store their data)
-readonly PRISM_APPIMAGE_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
+# Note: ElyPrismLauncher uses ~/.local/share/ElyPrismLauncher/ as data directory
+readonly PRISM_APPIMAGE_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/ElyPrismLauncher}"
 
 # Flatpak data directories (where Flatpak launchers store their data)
-readonly PRISM_FLATPAK_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${PRISM_FLATPAK_ID}/data/PineconeMC}"
+readonly PRISM_FLATPAK_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/${PRISM_FLATPAK_ID}/data/ElyPrismLauncher}"
 
 # AppImage executable location
-readonly PRISM_APPIMAGE_PATH="${LAUNCHER_APPIMAGE_PATH:-$PRISM_APPIMAGE_DATA_DIR/PineconeMC.AppImage}"
+readonly PRISM_APPIMAGE_PATH="${LAUNCHER_APPIMAGE_PATH:-$PRISM_APPIMAGE_DATA_DIR/ElyPrismLauncher.AppImage}"
 
 # =============================================================================
 # SYSTEM DETECTION VARIABLES
@@ -326,15 +327,15 @@ set_creation_launcher() {
     local type="$1"
     local executable="$2"
 
-    # Use LAUNCHER_NAME from vars.sh (pineconemc or prismlauncher)
-    local launcher_name="${LAUNCHER_NAME:-PineconeMC}"
+    # Use LAUNCHER_NAME from vars.sh (ElyPrismLauncher or prismlauncher)
+    local launcher_name="${LAUNCHER_NAME:-ElyPrismLauncher}"
     CREATION_LAUNCHER="$launcher_name"
     CREATION_LAUNCHER_TYPE="$type"
 
     if [[ "$type" == "appimage" ]]; then
-        CREATION_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
+        CREATION_DATA_DIR="${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/ElyPrismLauncher}"
     else
-        CREATION_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/PineconeMC}"
+        CREATION_DATA_DIR="${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/ElyPrismLauncher}"
     fi
 
     CREATION_INSTANCES_DIR="$CREATION_DATA_DIR/instances"

@@ -40,13 +40,14 @@ readonly ACTIVE_LAUNCHER_NAME="pineconemc"
 # PineconeMC is a fork of PrismLauncher with additional features
 # GitHub: https://github.com/ElyPrismLauncher/Launcher
 # Flatpak: https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref
+# Note: ElyPrismLauncher uses ~/.local/share/ElyPrismLauncher/ as data directory
 
-readonly PINECONEMC_NAME="PineconeMC"
+readonly PINECONEMC_NAME="ElyPrismLauncher"
 readonly PINECONEMC_FLATPAK_ID="io.github.elyprismlauncher.ElyPrismLauncher"
 readonly PINECONEMC_FLATPAK_REF="https://elyprismlauncher.github.io/flatpak/elyprismlauncher.flatpakref"
-readonly PINECONEMC_APPIMAGE_DATA_DIR="$HOME/.local/share/PineconeMC"
-readonly PINECONEMC_FLATPAK_DATA_DIR="$HOME/.var/app/${PINECONEMC_FLATPAK_ID}/data/PineconeMC"
-readonly PINECONEMC_APPIMAGE_PATH="$PINECONEMC_APPIMAGE_DATA_DIR/PineconeMC.AppImage"
+readonly PINECONEMC_APPIMAGE_DATA_DIR="$HOME/.local/share/ElyPrismLauncher"
+readonly PINECONEMC_FLATPAK_DATA_DIR="$HOME/.var/app/${PINECONEMC_FLATPAK_ID}/data/ElyPrismLauncher"
+readonly PINECONEMC_APPIMAGE_PATH="$PINECONEMC_APPIMAGE_DATA_DIR/ElyPrismLauncher.AppImage"
 
 # PineconeMC release URL (specific version)
 # Format: https://github.com/ElyPrismLauncher/Launcher/releases/download/{VERSION}/{FILENAME}
@@ -205,9 +206,9 @@ is_launcher_flatpak() {
 get_launcher_data_dir() {
     local type="$1"
     if is_launcher_flatpak "$type"; then
-        echo "${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/PineconeMC}"
+        echo "${LAUNCHER_FLATPAK_DATA_DIR:-$HOME/.var/app/io.github.elyprismlauncher.ElyPrismLauncher/data/ElyPrismLauncher}"
     else
-        echo "${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/PineconeMC}"
+        echo "${LAUNCHER_APPIMAGE_DATA_DIR:-$HOME/.local/share/ElyPrismLauncher}"
     fi
 }
 
@@ -230,8 +231,8 @@ get_launcher_instances_dir() {
 # @return      0 always
 # -----------------------------------------------------------------------------
 print_launcher_info() {
-    echo "Active Launcher: ${LAUNCHER_NAME:-PineconeMC}"
-    echo "AppImage Path: ${LAUNCHER_APPIMAGE_PATH:-$HOME/.local/share/PineconeMC/PineconeMC.AppImage}"
+    echo "Active Launcher: ${LAUNCHER_NAME:-ElyPrismLauncher}"
+    echo "AppImage Path: ${LAUNCHER_APPIMAGE_PATH:-$HOME/.local/share/ElyPrismLauncher/ElyPrismLauncher.AppImage}"
     echo "Flatpak ID: ${LAUNCHER_FLATPAK_ID:-io.github.elyprismlauncher.ElyPrismLauncher}"
     if [[ -n "${LAUNCHER_VERSION:-}" ]]; then
         echo "Version: $LAUNCHER_VERSION"

@@ -49,9 +49,9 @@ readonly PINECONEMC_FLATPAK_ID="io.github.elyprismlauncher.ElyPrismLauncher"
 
 # Data directories to clean
 PATHS_TO_CLEAN=(
-    # PineconeMC data directories
-    "$HOME/.local/share/PineconeMC"
-    "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/PineconeMC"
+    # ElyPrismLauncher data directories
+    "$HOME/.local/share/ElyPrismLauncher"
+    "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/ElyPrismLauncher"
 
     # PrismLauncher data directories
     "$HOME/.local/share/PrismLauncher"
@@ -273,7 +273,7 @@ cleanup_java() {
 show_summary() {
     print_header "MINECRAFT SPLITSCREEN CLEANUP v${SCRIPT_VERSION}"
 
-    local launcher_display_name="${LAUNCHER_NAME:-Launcher}"
+    local launcher_display_name="${LAUNCHER_NAME:-ElyPrismLauncher}"
 
     echo ""
     echo "This script will remove:"
@@ -303,19 +303,19 @@ show_detected_components() {
     print_header "DETECTED COMPONENTS"
 
     local found_any=false
-    local launcher_display_name="${LAUNCHER_NAME:-Launcher}"
+    local launcher_display_name="${LAUNCHER_NAME:-ElyPrismLauncher}"
 
-    # Check PineconeMC / active launcher
-    if [[ -d "$HOME/.local/share/PineconeMC" ]]; then
+    # Check ElyPrismLauncher
+    if [[ -d "$HOME/.local/share/ElyPrismLauncher" ]]; then
         local size
-        size=$(du -sh "$HOME/.local/share/PineconeMC" 2>/dev/null | cut -f1) || size="?"
-        print_info "PineconeMC AppImage data: $size"
+        size=$(du -sh "$HOME/.local/share/ElyPrismLauncher" 2>/dev/null | cut -f1) || size="?"
+        print_info "ElyPrismLauncher AppImage data: $size"
         found_any=true
     fi
-    if [[ -d "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/PineconeMC" ]]; then
+    if [[ -d "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/ElyPrismLauncher" ]]; then
         local size
-        size=$(du -sh "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/PineconeMC" 2>/dev/null | cut -f1) || size="?"
-        print_info "PineconeMC Flatpak data: $size"
+        size=$(du -sh "$HOME/.var/app/${LAUNCHER_FLATPAK_ID_VAR}/data/ElyPrismLauncher" 2>/dev/null | cut -f1) || size="?"
+        print_info "ElyPrismLauncher Flatpak data: $size"
         found_any=true
     fi
 
