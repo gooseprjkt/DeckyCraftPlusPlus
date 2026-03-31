@@ -6,7 +6,7 @@ Uses [PrismLauncher](https://prismlauncher.org/) with Fabric. A Microsoft accoun
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aradanmn/MinecraftSplitscreenSteamdeck/main/install-minecraft-splitscreen.sh | bash
+curl -fsSL https://raw.githubusercontent.com/gooseprjkt/DeckyCraftPlusPlus/main/install-minecraft-splitscreen.sh | bash
 ```
 
 The installer guides you through everything interactively.
